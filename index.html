@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة العمر والتاريخ الهجري - تصميم إسلامي</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.min.js"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', Arial, sans-serif;
+            background-color: #f8f3e9;
+            color: #333;
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2d5c3' fill-opacity='0.3'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 15px solid transparent;
+            border-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='%23267557' stroke-width='2' d='M10,10 L90,10 L90,90 L10,90 Z'/%3E%3Cpath fill='none' stroke='%23c0965c' stroke-width='2' d='M15,15 L85,15 L85,85 L15,85 Z'/%3E%3Cpath fill='none' stroke='%23267557' stroke-width='1' d='M20,20 L80,20 L80,80 L20,80 Z'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%23c0965c'/%3E%3Ccircle cx='90' cy='10' r='3' fill='%23c0965c'/%3E%3Ccircle cx='10' cy='90' r='3' fill='%23c0965c'/%3E%3Ccircle cx='90' cy='90' r='3' fill='%23c0965c'/%3E%3C/svg%3E") 30 stretch;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .header {
+            background: linear-gradient(135deg, #1b5e49, #0f5575);
+            color: white;
+            border-radius: 15px;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #d4af37;
+        }
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 25L60 40L50 55L40 40L50 25Z M65 25L75 40L65 55L55 40L65 25Z M35 25L45 40L35 55L25 40L35 25Z M50 55L60 70L50 85L40 70L50 55Z M65 55L75 70L65 85L55 70L65 55Z M35 55L45 70L35 85L25 70L35 55Z' stroke='white' fill='none' stroke-width='1' stroke-opacity='0.4'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cpath d='M30 10L40 30L30 50L20 30L30 10Z' stroke='%23d4af37' fill='none' stroke-width='0.5' stroke-opacity='0.4'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.6;
+            z-index: 0;
+            mix-blend-mode: soft-light;
+        }
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        .header-title {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .ornament {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .ornament::before,
+        .ornament::after {
+            content: "";
+            flex-grow: 1;
+            height: 2px;
+            background-image: linear-gradient(to right, transparent, #d4af37, transparent);
+            margin: 0 15px;
+        }
+        .ornament-icon {
+            color: #d4af37;
+            font-size: 24px;
+        }
+        .islamic-border {
+            border: 20px solid transparent;
+            border-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='%23267557' stroke-width='1' d='M10,10 L90,10 L90,90 L10,90 Z'/%3E%3Cpath fill='none' stroke='%23d4af37' stroke-width='1' d='M15,15 L85,15 L85,85 L15,85 Z'/%3E%3Cpath fill='none' stroke='%23267557' stroke-width='1' d='M5,5 L95,5 L95,95 L5,95 Z'/%3E%3Ccircle cx='5' cy='5' r='3' fill='%23d4af37'/%3E%3Ccircle cx='95' cy='5' r='3' fill='%23d4af37'/%3E%3Ccircle cx='5' cy='95' r='3' fill='%23d4af37'/%3E%3Ccircle cx='95' cy='95' r='3' fill='%23d4af37'/%3E%3Cpath d='M5,50 L15,50 M95,50 L85,50 M50,5 L50,15 M50,95 L50,85' stroke='%23d4af37' stroke-width='1'/%3E%3Cpath d='M18,18 L25,25 M82,18 L75,25 M18,82 L25,75 M82,82 L75,75' stroke='%23267557' stroke-width='1'/%3E%3C/svg%3E") 30 stretch;
+            padding: 25px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .islamic-border::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L23.5 13.5H37.5L26 21.5L29.5 35L20 27L10.5 35L14 21.5L2.5 13.5H16.5L20 0Z' fill='%23d4af37' fill-opacity='0.08'/%3E%3C/svg%3E");
+            z-index: -1;
+            pointer-events: none;
+        }
+        .form-container, .result-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px 30px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .form-container::before, .result-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 20L35 30L30 40L25 30L30 20Z' stroke='%23267557' fill='none' stroke-width='0.5' stroke-opacity='0.1'/%3E%3C/svg%3E");
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .form-container::after, .result-container::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 15px;
+            background: linear-gradient(to bottom, #d4af37, transparent);
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+            opacity: 0.5;
+        }
+        .result-container {
+            display: none;
+        }
+        .result-box {
+            background-color: #f7f9fc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-right: 4px solid #d4af37;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e4e9f2;
+        }
+        .result-box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, #1b5e49, #d4af37);
+            border-top-right-radius: 12px;
+            border-top-left-radius: 12px;
+        }
+        .result-box::after {
+            content: "";
+            position: absolute;
+            top: 5px;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='10' viewBox='0 0 100 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,5 L100,5' stroke='%23d4af37' stroke-width='0.5' stroke-dasharray='1,5'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 40px;
+            position: relative;
+        }
+        .footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background-image: linear-gradient(to right, transparent, #d4af37, transparent);
+        }
+        .footer::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 80px;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='80' viewBox='0 0 100 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30,0 C15,0 5,20 0,30 L0,80 L100,80 L100,30 C95,20 85,0 70,0 Z' fill='%23267557' fill-opacity='0.05'/%3E%3Cpath d='M50,10 C30,10 15,40 15,40 L85,40 C85,40 70,10 50,10 Z' stroke='%23d4af37' fill='none' stroke-width='0.5' stroke-opacity='0.7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: bottom center;
+            background-size: 100% auto;
+            z-index: -1;
+        }
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .input-group::before {
+            content: "";
+            position: absolute;
+            left: -15px;
+            top: 10px;
+            bottom: 10px;
+            width: 5px;
+            background-image: linear-gradient(to bottom, transparent, #1b5e49, transparent);
+            border-radius: 3px;
+            opacity: 0.3;
+        }
+        .btn {
+            background: linear-gradient(135deg, #1b5e49, #0f5575);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(27, 94, 73, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            bottom: -50%;
+            left: -50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+            transform: rotateZ(60deg) translate(-5em, 7.5em);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .btn:hover::after {
+            opacity: 1;
+            transform: rotateZ(60deg) translate(1em, -7.5em);
+        }
+        .btn:hover {
+            background: linear-gradient(135deg, #267557, #0f6585);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(27, 94, 73, 0.35);
+        }
+        .charity {
+            font-style: italic;
+            color: #4b5563;
+            margin-top: 15px;
+            font-family: 'Amiri', serif;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .input-field {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #fafbfd;
+        }
+        .input-field:focus {
+            border-color: #d4af37;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+            background-color: white;
+        }
+        label {
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: block;
+            color: #1b5e49;
+        }
+        .result-title {
+            color: #1b5e49;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-family: 'Amiri', serif;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        .result-value {
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+            padding-right: 15px;
+            position: relative;
+        }
+        .result-value::before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 5px;
+            background-color: #d4af37;
+            border-radius: 50%;
+        }
+        .separator {
+            height: 30px;
+            background-image: url("data:image/svg+xml,%3Csvg width='120' height='30' viewBox='0 0 120 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,15 L40,15 M80,15 L120,15' stroke='%23d4af37' stroke-width='1' stroke-dasharray='1,3'/%3E%3Cpath d='M55,15 L65,15' stroke='%23267557' stroke-width='1' stroke-dasharray='1,3'/%3E%3Ccircle cx='60' cy='15' r='8' fill='%23d4af37' fill-opacity='0.2'/%3E%3Ccircle cx='60' cy='15' r='5' fill='%23d4af37' fill-opacity='0.4'/%3E%3Ccircle cx='60' cy='15' r='3' fill='%23d4af37'/%3E%3Ccircle cx='50' cy='15' r='3' fill='%23267557' fill-opacity='0.4'/%3E%3Ccircle cx='70' cy='15' r='3' fill='%23267557' fill-opacity='0.4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 25px 0;
+        }
+        .islamic-star {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin: 0 15px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23d4af37' d='M50,0 L61,35 L97,35 L68,57 L79,91 L50,70 L21,91 L32,57 L3,35 L39,35 Z'/%3E%3Cpath fill='%23267557' fill-opacity='0.3' d='M50,20 L56,40 L77,40 L60,53 L67,73 L50,60 L33,73 L40,53 L23,40 L44,40 Z'/%3E%3C/svg%3E");
+            background-size: contain;
+        }
+        .moon-icon {
+            display: inline-block;
+            width: 70px;
+            height: 70px;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='48' fill='%231b5e49' fill-opacity='0.1' stroke='%23d4af37' stroke-width='1'/%3E%3Cpath fill='%23d4af37' d='M50,2 C22.4,2 0,24.4 0,52 C0,79.6 22.4,102 50,102 C77.6,102 100,79.6 100,52 C100,24.4 77.6,2 50,2 Z M50,92 C28,92 10,74 10,52 C10,30 28,12 50,12 C50,12 30,27 30,52 C30,77 50,92 50,92 Z'/%3E%3C/svg%3E");
+            background-size: contain;
+            margin-bottom: 15px;
+        }
+        .section-title {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            right: 25%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #d4af37, transparent);
+        }
+        .dome-decoration {
+            height: 60px;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='60' viewBox='0 0 100 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50,0 C30,0 20,30 0,30 L0,60 L100,60 L100,30 C80,30 70,0 50,0 Z' fill='%231b5e49' fill-opacity='0.1'/%3E%3Cpath d='M50,10 C35,10 25,25 10,25 L90,25 C75,25 65,10 50,10 Z' stroke='%23d4af37' fill='none' stroke-width='1'/%3E%3Cpath d='M50,5 C32,5 20,22.5 7.5,22.5 L92.5,22.5 C80,22.5 68,5 50,5 Z' stroke='%23d4af37' fill='none' stroke-width='0.5' stroke-opacity='0.7'/%3E%3Ccircle cx='50' cy='5' r='3' fill='%23d4af37'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center top;
+            background-size: 100% 100%;
+            margin-bottom: 30px;
+        }
+        
+        .corner-decoration {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L80,0 L80,80 C35.81722,80 0,44.18278 0,0 Z' fill='%23267557' fill-opacity='0.1'/%3E%3Cpath d='M20,0 L20,20 L0,20' stroke='%23d4af37' stroke-width='1' fill='none'/%3E%3Cpath d='M40,0 L40,40 L0,40' stroke='%23d4af37' stroke-width='0.5' fill='none' stroke-dasharray='1,2'/%3E%3Cpath d='M60,0 L60,60 L0,60' stroke='%23267557' stroke-width='0.5' fill='none' stroke-dasharray='1,2'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 2;
+        }
+        .top-right {
+            top: 0;
+            right: 0;
+            transform: rotate(90deg);
+        }
+        .top-left {
+            top: 0;
+            left: 0;
+            transform: rotate(0deg);
+        }
+        .bottom-right {
+            bottom: 0;
+            right: 0;
+            transform: rotate(180deg);
+        }
+        .bottom-left {
+            bottom: 0;
+            left: 0;
+            transform: rotate(270deg);
+        }
+        
+        .side-pattern {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='80' viewBox='0 0 20 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10,0 L20,15 L10,30 L0,15 Z M10,30 L20,45 L10,60 L0,45 Z M10,60 L20,75 L10,90 L0,75 Z' stroke='%23267557' fill='none' stroke-width='0.5' stroke-opacity='0.3'/%3E%3C/svg%3E");
+            background-repeat: repeat-y;
+            pointer-events: none;
+        }
+        .left-pattern {
+            left: 0;
+        }
+        .right-pattern {
+            right: 0;
+            transform: scaleX(-1);
+        }
+        
+        .btn-icon {
+            margin-left: 10px;
+            display: inline-block;
+        }
+        
+        .title-decoration {
+            position: relative;
+            display: inline-block;
+            padding: 0 20px;
+        }
+        .title-decoration::before,
+        .title-decoration::after {
+            content: "۞";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #d4af37;
+            font-size: 20px;
+        }
+        .title-decoration::before {
+            left: 0;
+        }
+        .title-decoration::after {
+            right: 0;
+        }
+        
+        .shadow-effect {
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="corner-decoration top-left"></div>
+        <div class="corner-decoration top-right"></div>
+        <div class="corner-decoration bottom-left"></div>
+        <div class="corner-decoration bottom-right"></div>
+        <div class="side-pattern left-pattern"></div>
+        <div class="side-pattern right-pattern"></div>
+        
+        <div class="header shadow-effect">
+            <div class="header-content">
+                <div class="moon-icon mx-auto mb-4"></div>
+                <h1 class="text-4xl font-bold mb-3 header-title">حاسبة العمر والتاريخ الهجري</h1>
+                <div class="ornament">
+                    <span class="ornament-icon">۞</span>
+                </div>
+                <p class="text-lg">أدخل تاريخ ميلادك لمعرفة عمرك بالتفصيل واليوم الذي ولدت فيه والتاريخ الهجري المقابل</p>
+            </div>
+        </div>
+
+        <div class="islamic-border">
+            <div class="form-container shadow-effect">
+                <div class="dome-decoration"></div>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 section-title text-center">
+                    <span class="title-decoration">أدخل تاريخ الميلاد</span>
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <div class="input-group">
+                        <label for="day">اليوم:</label>
+                        <input type="number" id="day" min="1" max="31" class="input-field" placeholder="اليوم" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="month">الشهر:</label>
+                        <select id="month" class="input-field" required>
+                            <option value="" disabled selected>اختر الشهر</option>
+                            <option value="1">يناير</option>
+                            <option value="2">فبراير</option>
+                            <option value="3">مارس</option>
+                            <option value="4">أبريل</option>
+                            <option value="5">مايو</option>
+                            <option value="6">يونيو</option>
+                            <option value="7">يوليو</option>
+                            <option value="8">أغسطس</option>
+                            <option value="9">سبتمبر</option>
+                            <option value="10">أكتوبر</option>
+                            <option value="11">نوفمبر</option>
+                            <option value="12">ديسمبر</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="year">السنة:</label>
+                        <input type="number" id="year" min="1900" max="2100" class="input-field" placeholder="السنة" required>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-10">
+                    <button id="calculate" class="btn">
+                        <span class="btn-icon"><i class="fas fa-calculator"></i></span>
+                        حساب العمر
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="islamic-border">
+            <div id="results" class="result-container shadow-effect">
+                <div class="dome-decoration"></div>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 section-title text-center">
+                    <span class="title-decoration">النتائج</span>
+                </h2>
+                
+                <div class="result-box mt-8">
+                    <div class="result-title"><i class="fas fa-calendar-alt ml-3"></i> العمر بالتفصيل:</div>
+                    <div id="age" class="result-value"></div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-title"><i class="fas fa-calendar-day ml-3"></i> يوم الولادة:</div>
+                    <div id="dayOfWeek" class="result-value"></div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="result-title"><i class="fas fa-moon ml-3"></i> التاريخ الهجري المقابل:</div>
+                    <div id="hijriDate" class="result-value"></div>
+                </div>
+                
+                <div class="separator"></div>
+                
+                <div class="text-center">
+                    <button id="recalculate" class="btn">
+                        <span class="btn-icon"><i class="fas fa-redo"></i></span>
+                        حساب جديد
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="ornament">
+                <div class="islamic-star"></div>
+                <h3 class="text-2xl font-bold text-gray-700">صدقة جارية</h3>
+                <div class="islamic-star"></div>
+            </div>
+            <p class="charity">هذه الصفحة مقدمة كصدقة جارية، نرجو من الله أن ينفع بها الناس</p>
+            <div class="ornament mt-6">
+                <span class="ornament-icon">۞</span>
+            </div>
+            <p class="mt-4 text-sm text-gray-500">© جميع الحقوق محفوظة</p>
+        </div>
+    </div>
+
+    <script>
+        // أسماء الأيام بالعربية
+        const arabicDays = {
+            'Sunday': 'الأحد',
+            'Monday': 'الإثنين',
+            'Tuesday': 'الثلاثاء',
+            'Wednesday': 'الأربعاء',
+            'Thursday': 'الخميس',
+            'Friday': 'الجمعة',
+            'Saturday': 'السبت'
+        };
+
+        // أسماء الشهور الهجرية بالعربية
+        const arabicHijriMonths = [
+            'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني',
+            'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان',
+            'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+        ];
+
+        document.getElementById('calculate').addEventListener('click', function() {
+            const day = parseInt(document.getElementById('day').value);
+            const month = parseInt(document.getElementById('month').value);
+            const year = parseInt(document.getElementById('year').value);
+            
+            // التحقق من صحة التاريخ
+            if (!day || !month || !year || isNaN(day) || isNaN(month) || isNaN(year)) {
+                alert('الرجاء إدخال تاريخ صحيح');
+                return;
+            }
+            
+            if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100) {
+                alert('الرجاء إدخال تاريخ صحيح');
+                return;
+            }
+            
+            // إنشاء تاريخ الميلاد
+            const birthDate = new Date(year, month - 1, day);
+            
+            // التحقق من صحة التاريخ (مثل 30 فبراير)
+            if (birthDate.getDate() !== day) {
+                alert('التاريخ المدخل غير صحيح، الرجاء التحقق من اليوم والشهر');
+                return;
+            }
+            
+            // تاريخ اليوم
+            const today = new Date();
+            
+            // التحقق من أن تاريخ الميلاد لا يتجاوز تاريخ اليوم
+            if (birthDate > today) {
+                alert('تاريخ الميلاد لا يمكن أن يكون في المستقبل');
+                return;
+            }
+            
+            // حساب العمر بالتفصيل
+            let ageYears = today.getFullYear() - birthDate.getFullYear();
+            let ageMonths = today.getMonth() - birthDate.getMonth();
+            let ageDays = today.getDate() - birthDate.getDate();
+            
+            if (ageDays < 0) {
+                ageMonths--;
+                // عدد الأيام في الشهر السابق
+                const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                ageDays += lastMonth.getDate();
+            }
+            
+            if (ageMonths < 0) {
+                ageYears--;
+                ageMonths += 12;
+            }
+            
+            // تحديد يوم الميلاد
+            const dayOfWeek = birthDate.toLocaleDateString('en-US', { weekday: 'long' });
+            const arabicDayOfWeek = arabicDays[dayOfWeek];
+            
+            // تحويل التاريخ إلى التقويم الهجري
+            moment.locale('ar-SA');
+            const hijriDate = moment(birthDate).format('iYYYY/iM/iD');
+            const hijriMoment = moment(birthDate).iYear();
+            const hijriMonth = moment(birthDate).iMonth();
+            const hijriDay = moment(birthDate).iDate();
+            
+            const formattedHijriDate = `${hijriDay} ${arabicHijriMonths[hijriMonth]} ${hijriMoment} هـ`;
+            
+            // عرض النتائج
+            document.getElementById('age').textContent = `${ageYears} سنة و ${ageMonths} شهر و ${ageDays} يوم`;
+            document.getElementById('dayOfWeek').textContent = arabicDayOfWeek;
+            document.getElementById('hijriDate').textContent = formattedHijriDate;
+            
+            // إظهار قسم النتائج
+            document.getElementById('results').style.display = 'block';
+            document.querySelector('.form-container').style.display = 'none';
+        });
+        
+        document.getElementById('recalculate').addEventListener('click', function() {
+            document.querySelector('.form-container').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
